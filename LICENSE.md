@@ -6,3 +6,4 @@
 #### The use of grammar, phrasing, or otherwise semantics in the refutation of this license or the code to which it applies is prohibited.
 #### The author and distributors provide ABSOLUTELY NO WARRANTY for the operation and/or potential damage of/by this software; this software is distributed on an "AS IS" basis.
 #### The terms of this license apply to the license itself.
+#### The license does not extend to any external libraries used.

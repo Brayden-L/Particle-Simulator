@@ -1,3 +1,5 @@
+package com.mygdx.particles;
+
 class Atom {
     Particle[]  particles;
     double[]    position;

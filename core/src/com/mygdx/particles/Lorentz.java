@@ -1,3 +1,5 @@
+package com.mygdx.particles;
+
 class Lorentz {
 /*
     The Lorentz force is the force on a charged particle due to electric and magnetic fields.
@@ -20,7 +22,7 @@ class Lorentz {
 
 }
 /*
-do a perp dot product
+do a perpendicular dot product
 make a new vector 90 degrees to the left with the magnitude of the scalar you get from (v0.x*v1.y)-(v0.y*v1.x)
  */
 /*

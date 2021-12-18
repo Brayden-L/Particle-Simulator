@@ -1,3 +1,5 @@
+package com.mygdx.particles;
+
 class Velocity {
     /*
      Vectors created with this class are already normalized,
@@ -13,7 +15,7 @@ class Velocity {
         this.x = vel[0];
         this.y = vel[1];
     }
-
+/*
     gravity() {
 
     }
@@ -21,6 +23,6 @@ class Velocity {
     electromagnetism() {
 
     }
-
+*/
 }
 

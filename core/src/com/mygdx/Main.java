@@ -1,8 +1,6 @@
-package com.mygdx.physics;/*
+package com.mygdx;/*
     Copyright (C) 2021  Brayden L.
 */
-
-import java.util.*;
 
 public class Main {
     public static void main(String[] args) {

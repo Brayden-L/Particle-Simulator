@@ -1,4 +1,4 @@
-package com.mygdx.phys;
+package com.mygdx.particles;
 
 class Lorentz {
 /*
@@ -7,7 +7,18 @@ class Lorentz {
     https://www.brightstorm.com/science/physics/magnetism/lorentz-force/
 
 */
+    int             charge;
+    Velocity        velocity;
+    MagneticField   magneticField;
 
+    Lorentz(double electricField, double magneticField) {
+        this.electricField = electricField;
+        this.magneticField = magneticField;
+    }
+
+    crossproduct(electricField, magneticField) {
+        
+    }
 
 }
 /*

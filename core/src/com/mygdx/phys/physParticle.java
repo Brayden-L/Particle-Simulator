@@ -11,7 +11,11 @@ public class physParticle implements Runnable, Pool.Poolable {
     String  id;     //
     double[] pos;   //
     Velocity2 vel;
-    double gravity;
+    double gravity; // Gravitation Constant * Mass1 * Mass2 / distance^2
+
+    public final double gc      = 0.0000000000667408;
+	public final double amuKgC  = 0.0000000000000000000000000016605;
+
 
     public physParticle(String name, String type, double[] pos, Velocity2 vel) {
 
@@ -19,16 +23,19 @@ public class physParticle implements Runnable, Pool.Poolable {
 
         switch (type) {
             case "proton":
-                this.mass   = 1.000727;
-                    this.charge = 1;
+                this.mass           = 1.000727;
+                    this.charge     = 1;
+                    this.gravity    = gc * (mass * amuKgC);
                     break;
                 case "neutron":
-                    this.mass   = 1.000866;
-                    this.charge = 0;
+                    this.mass       = 1.000866;
+                    this.charge     = 0;
+                    this.gravity    = gc * (mass * amuKgC);
                     break;
                 case "electron":
-                    this.mass   = 0.0005486;
-                    this.charge = -1;
+                    this.mass       = 0.0005486;
+                    this.charge     = -1;
+                    this.gravity    = gc * (mass * amuKgC);
                     break;
                 default:
                     System.out.println("Error, invalid TYPE attribute ascribed to PARTICLE " + id + ".");
@@ -114,6 +121,11 @@ public class physParticle implements Runnable, Pool.Poolable {
 
     }
 
+    public void gravityPositionUpdate() {
+        this.pos[0] += 0;
+        this.pos[1] += 0;
+    }
+
     @Override
     public void run() {
         System.out.println("Created particle <" + id + "> at " + pos + ".");
@@ -121,13 +133,18 @@ public class physParticle implements Runnable, Pool.Poolable {
 
     @Override
     public void reset() {
-
+        String  name    = null;
+        String  type    = null;
+        double  mass    = 0;
+        int     charge  = 0;
+        String  id      = null;
+        double[] pos    = null;
+        Velocity2 vel   = null;
+        double gravity  = 0;
     }
 
     static void main() {
 
         } // TODO write particle behavior
-
-
 
 }

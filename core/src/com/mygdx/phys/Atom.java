@@ -73,19 +73,30 @@ class Atom implements Runnable, Pool.Poolable {
 
     /* Behavior: */
 
+    public void updatePosition() {
+        /* Update position according to velocity. */
+        position[0] += velocity.getRun();
+        position[1] += velocity.getRise();
+    }
+
     @Override
     public void run() {
         System.out.println("Atom created with " + Arrays.toString(particles) + " at " + Arrays.toString(position) + ".");
     }
 
-
-    public void main() {
-
-    }
-
-
     @Override
     public void reset() {
-
+        physParticle[]  particles   = null;
+        double[]    position        = null;
+        int         charge          = 0;
+        Velocity2   velocity        = null;
+        double      gravity         = 0;
     }
+
+    public void main() {
+        this.updatePosition();
+    }
+
+
+
 }

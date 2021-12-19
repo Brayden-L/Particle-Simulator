@@ -1,10 +1,8 @@
 package com.mygdx.phys;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Pool;
 
-
-
-public class physParticle implements Runnable {
+public class physParticle implements Runnable, Pool.Poolable {
     /* The structure of particleID will be:  */
     String  name;
     String  type;   //
@@ -12,10 +10,10 @@ public class physParticle implements Runnable {
     int     charge; //
     String  id;     //
     double[] pos;   //
-    Vector2 vel;
-    //float   gravity;
+    Velocity2 vel;
+    double gravity;
 
-    public physParticle(String name, String type, double[] pos, Vector2 vel) {
+    public physParticle(String name, String type, double[] pos, Velocity2 vel) {
 
         this.type   = type;
 
@@ -34,6 +32,7 @@ public class physParticle implements Runnable {
                     break;
                 default:
                     System.out.println("Error, invalid TYPE attribute ascribed to PARTICLE " + id + ".");
+                    // TODO make ID an actual thing in generation
                     break;
             }
 
@@ -67,8 +66,12 @@ public class physParticle implements Runnable {
         return id;
     }
 
-    public Vector2 getVel() {
+    public Velocity2 getVel() {
         return vel;
+    }
+
+    public double getGravity() {
+        return gravity;
     }
 
     /* Setters: */
@@ -77,22 +80,54 @@ public class physParticle implements Runnable {
         this.name = name;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setMass(double mass) {
+        this.mass = mass;
+    }
+
     public void setPos(double[] pos) {
         this.pos = pos;
     }
 
-    public void setVel(Vector2 vel) {
+    public void setCharge(int charge) {
+        this.charge = charge;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setVel(Velocity2 vel) {
         this.vel = vel;
+    }
+
+    public void setGravity(double gravity) {
+        this.gravity = gravity;
+    }
+
+    /* Util methods: */
+
+    public void bind() { // TODO write bind method
+
     }
 
     @Override
     public void run() {
-        System.out.println("Created particle " + id + ".");
+        System.out.println("Created particle <" + id + "> at " + pos + ".");
+    }
+
+    @Override
+    public void reset() {
+
     }
 
     static void main() {
 
-        }
+        } // TODO write particle behavior
+
 
 
 }

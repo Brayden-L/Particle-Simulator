@@ -1,14 +1,11 @@
 package com.mygdx.phys;
 
 public class Environment {
-    int[]       dimensions;
     String[]    particles;
 
-    public Environment(int[] dimensions, String[] particles) {
-        this.dimensions = dimensions;
+    public Environment(String[] particles) {
         this.particles = particles;
     }
-
 
 }
 

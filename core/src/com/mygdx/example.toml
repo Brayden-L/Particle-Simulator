@@ -8,5 +8,5 @@ z = 100
 name    = "John the Particle"
 type    = "proton"
 pos     = [12.3, 4.8]
-vel     = [-31, 5, 6.9]
+#vel     = [-31, 5, 6.9]
 

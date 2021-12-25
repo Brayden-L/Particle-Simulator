@@ -5,26 +5,25 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-import com.moandjiezana.toml.Toml;
-import com.mygdx.phys.Environment;
 import com.mygdx.phys.physParticle;
-import java.util.ArrayList;
+import com.moandjiezana.toml.Toml;
+import java.util.HashMap;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.Arrays;
+import java.util.UUID;
+import java.util.concurrent.CyclicBarrier;
 
 public class ParticleSimulatorClass extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
-
-	//    public String[] particleFactory(Toml tomlData) {
-//        ArrayList particleArray = new ArrayList<>;
 
 	/* Particle generator: */
 /*        assert false;
@@ -56,19 +55,35 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 			e.printStackTrace();
 		}
 */
-		File tomlFile = new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
+		File tomlFile 				= new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
+		Hash
 		Map<String, Object> tomlMap = new Toml().read(tomlFile).toMap();
-		//Toml toml = new Toml().read(tomlFile);
+		Toml tomlToml 				= new Toml().read(tomlFile);
+
+		/* Pause particle threads to ensure simultaneous concurrent execution. */
+		final CyclicBarrier gate = new CyclicBarrier((tomlMap.size() + 1));
+
+		HashMap<UUID, physParticle> environment = new HashMap<UUID, physParticle>();
+
+		for (String key : tomlMap.keySet()) {
+			new UUID(128, 128);
+			UUID id = UUID.randomUUID();
+			environment.put(id, tomlMap.get(key));
+		}
 
 		System.out.println(tomlMap);
-//        Environment env = new Environment();
 
 	}
+
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
+		AssetManager manager = new AssetManager();
+		manager.load("electron.png", Texture.class);
+		manager.load("neutron.png", Texture.class);
+		manager.load("proton.png", Texture.class);
 	}
 
 	@Override

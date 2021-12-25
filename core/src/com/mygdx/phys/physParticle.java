@@ -1,14 +1,15 @@
 package com.mygdx.phys;
 
 import com.badlogic.gdx.utils.Pool;
+import java.util.Arrays;
+import java.util.UUID;
 
 public class physParticle implements Runnable, Pool.Poolable {
-    /* The structure of particleID will be:  */
     String  name;
     String  type;   //
     double  mass;   //
     int     charge; //
-    String  id;     //
+    UUID    id;     //
     double[] pos;   //
     Velocity2 vel;
     double gravity; // Gravitation Constant * Mass1 * Mass2 / distance^2
@@ -16,8 +17,7 @@ public class physParticle implements Runnable, Pool.Poolable {
     public final double gc      = 0.0000000000667408;
 	public final double amuKgC  = 0.0000000000000000000000000016605;
 
-
-    public physParticle(String name, String type, double[] pos, Velocity2 vel) {
+    public physParticle(String name, String type, UUID id, double[] pos, Velocity2 vel) {
 
         this.type   = type;
 
@@ -43,6 +43,7 @@ public class physParticle implements Runnable, Pool.Poolable {
                     break;
             }
 
+            this.id     = id;
             this.pos    = pos;
             this.vel    = vel;
     }
@@ -69,7 +70,7 @@ public class physParticle implements Runnable, Pool.Poolable {
         return charge;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -103,7 +104,7 @@ public class physParticle implements Runnable, Pool.Poolable {
         this.charge = charge;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -128,7 +129,7 @@ public class physParticle implements Runnable, Pool.Poolable {
 
     @Override
     public void run() {
-        System.out.println("Created particle <" + id + "> at " + pos + ".");
+        System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
     }
 
     @Override

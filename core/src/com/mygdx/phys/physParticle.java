@@ -3,8 +3,12 @@ package com.mygdx.phys;
 import com.badlogic.gdx.utils.Pool;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.CyclicBarrier;
 
 public class physParticle implements Runnable, Pool.Poolable {
+
+    CyclicBarrier gate;
+
     String  name;
     String  type;   //
     double  mass;   //
@@ -17,7 +21,7 @@ public class physParticle implements Runnable, Pool.Poolable {
     public final double gc      = 0.0000000000667408;
 	public final double amuKgC  = 0.0000000000000000000000000016605;
 
-    public physParticle(String name, String type, UUID id, double[] pos, Velocity2 vel) {
+    public physParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel) {
 
         this.type   = type;
 
@@ -129,6 +133,7 @@ public class physParticle implements Runnable, Pool.Poolable {
 
     @Override
     public void run() {
+        gate.await();
         System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
     }
 
@@ -146,6 +151,6 @@ public class physParticle implements Runnable, Pool.Poolable {
 
     static void main() {
 
-        } // TODO write particle behavior
+    } // TODO write particle behavior
 
 }

@@ -2,7 +2,6 @@
     Copyright (C) 2021  Brayden L.
 */
 
-
 package com.mygdx.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -13,8 +12,8 @@ public class DesktopLauncher  {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Particle Simulator";
-		config.width = 1800;
-		config.height = 900;
+		config.width = 1920;
+		config.height = 1080;
 
 		try {
 //			new LwjglApplication(new ParticleSimulatorClass(args[0]), config);

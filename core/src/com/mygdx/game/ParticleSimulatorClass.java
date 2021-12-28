@@ -10,12 +10,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import com.mygdx.phys.physParticle;
+import com.mygdx.phys.Velocity2;
 import com.moandjiezana.toml.Toml;
-import java.util.HashMap;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
@@ -25,34 +27,22 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	CyclicBarrier gate;
-	File tomlFile;
-	Map<String, Object> tomlMap;
-	Toml tomlToml;
+	File toml;
+	Map<String, Object> pMap;
+	Toml pToml;
+	Map<Integer[][], Object> environment;
 
-	public ParticleSimulatorClass(/*String arg*/) {
-
+	public ParticleSimulatorClass() {
 		// https://www.w3schools.com/java/java_files_read.asp
 		// https://github.com/mwanji/toml4j
-/*
-		try {
-			tomlFile = new File(arg);
-			toml = new Toml().read(tomlFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-*/
-		tomlFile 	= new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
-		tomlMap 	= new Toml().read(tomlFile).toMap();
-		tomlToml 	= new Toml().read(tomlFile);
+		/* Loads TOML file as a File object. */
+		toml	= new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
+		/* These load the File as TOML. pToml gets set to a Table of Particles, pMap gets set to a Map of pToml. */
+		pToml 	= new Toml().read(toml).getTable("particles");
+		pMap 	= new Toml().read(pToml).toMap();
 
-		gate = new CyclicBarrier((tomlMap.size() + 1));
-
-		//HashMap<UUID, physParticle> environment = new HashMap<UUID, physParticle>();
-
-		System.out.println(tomlMap);
-
+		//gate = new CyclicBarrier((pMap.size() + 1));
 	}
-
 
 	@Override
 	public void create () {
@@ -62,19 +52,33 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 		manager.load("electron.png", Texture.class);
 		manager.load("neutron.png", Texture.class);
 		manager.load("proton.png", Texture.class);
-
-		for (String key : tomlMap.keySet()) {
+		/* This loads the Particles from the particles.toml file: */
+		int itr = 0;
+		for (String key : pMap.keySet()) {
 			new UUID(128, 128);
 			UUID id = UUID.randomUUID();
+			pToml.getTable("particle").toMap().get(key);
+			double[] pos = new double[1];
+			for(int i = 0; i < pToml.getList("particles[" + itr + "].pos").size(); i++) {
+				pos[i] = (double) pToml.getList(
+						"particles[" + itr + "].pos").get(i);
+			} // might be able to replace this ^ with pos[0,1] = pToml.getList("particles[" + itr + "].pos").get(0,1);
+			double[] velArr = new double[2];
+			for (int i = 0; i < 3; i++) velArr[i] = (double) pToml.getList("particles[" + itr + "].vel").get(i);
+			Velocity2 vel = new Velocity2(velArr);
 			new Thread(
+					// (CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel)
 					new physParticle(
 							gate,
-							tomlMap.get(key), 	// TODO FINISH GETTING ATTRIBUTES
-							"",			// https://www.geeksforgeeks.org/map-get-method-in-java-with-examples/
+							pToml.getString("particles[" + itr + "].name"),
+							pToml.getString("particles[" + itr + "].type"),
 							id,
-							b					// lol
+							pos,
+							vel
 					)
 			).start();
+			System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
+			itr++;
 		}
 	}
 
@@ -93,7 +97,7 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 	}
 
 	public void main() throws BrokenBarrierException, InterruptedException {
-		gate.await();
+		 //gate.await();
 	}
 
 }

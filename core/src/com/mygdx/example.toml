@@ -1,12 +1,17 @@
-[environment.dimensions]
-x = 100
-y = 100
-z = 100
+#[environment.dimensions]
+#x = 100
+#y = 100
+#z = 100
 
+[[particles]]
+name = "John the Particle"
+type = "electron"
+pos = [12.3, 4.8]
 
-[e1]
-name    = "John the Particle"
-type    = "proton"
-pos     = [12.3, 4.8]
-#vel     = [-31, 5, 6.9]
+[[particles]]
+name = "Larry the Proton"
+type = "proton"
+pos = [12.9, 48.6]
+
+[[atoms]]
 

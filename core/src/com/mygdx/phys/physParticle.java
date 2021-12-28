@@ -8,7 +8,6 @@ import java.util.concurrent.CyclicBarrier;
 public class physParticle implements Runnable, Pool.Poolable {
 
     CyclicBarrier gate;
-
     String  name;
     String  type;   //
     double  mass;   //
@@ -16,7 +15,8 @@ public class physParticle implements Runnable, Pool.Poolable {
     UUID    id;     //
     double[] pos;   //
     Velocity2 vel;
-    double gravity; // Gravitation Constant * Mass1 * Mass2 / distance^2
+    double gravity; // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment in for]
+
 
     public final double gc      = 0.0000000000667408;
 	public final double amuKgC  = 0.0000000000000000000000000016605;
@@ -51,90 +51,70 @@ public class physParticle implements Runnable, Pool.Poolable {
             this.pos    = pos;
             this.vel    = vel;
     }
-
+    // Getters and Setters take up needless space with line-breaks between them.
     /* Getters: */
-
     public String getName() {
         return name;
     }
-
     public String getType() {
         return type;
     }
-
     public double getMass() {
         return mass;
     }
-
     public double[] getPos() {
         return pos;
     }
-
     public int getCharge() {
         return charge;
     }
-
     public UUID getId() {
         return id;
     }
-
     public Velocity2 getVel() {
         return vel;
     }
-
     public double getGravity() {
         return gravity;
     }
-
     /* Setters: */
-
     public void setName(String name) {
         this.name = name;
     }
-
     public void setType(String type) {
         this.type = type;
     }
-
     public void setMass(double mass) {
         this.mass = mass;
     }
-
     public void setPos(double[] pos) {
         this.pos = pos;
     }
-
     public void setCharge(int charge) {
         this.charge = charge;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
-
     public void setVel(Velocity2 vel) {
         this.vel = vel;
     }
-
     public void setGravity(double gravity) {
         this.gravity = gravity;
     }
 
+
     /* Util methods: */
 
-    public void bind() { // TODO write bind method
-
-    }
-
-    public void gravityPositionUpdate() {
+    public void gravityPositionUpdate() { // TODO write gravity update
         this.pos[0] += 0;
         this.pos[1] += 0;
     }
 
     @Override
     public void run() {
-        gate.await();
-        System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
+        //gate.await();
+        System.out.println("Started particle <" + id + "> at " + Arrays.toString(pos) + ".");
     }
 
     @Override
@@ -149,8 +129,10 @@ public class physParticle implements Runnable, Pool.Poolable {
         double gravity  = 0;
     }
 
-    static void main() {
-
+    void main() {
+        // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment # in for loop]
+        vel.update();
+        //pos.update(); // TODO write position update code
     } // TODO write particle behavior
 
 }

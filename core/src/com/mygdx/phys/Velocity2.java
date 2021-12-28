@@ -1,15 +1,18 @@
 package com.mygdx.phys;
 
-class Velocity2 {
+public class Velocity2 {
 	double[] factors;
 	double rise;
 	double run;
 	double scalarCoefficient;
 
-	Velocity2(double[] factors) {
+	public Velocity2(double[] factors) {
 		this.rise 	= factors[0];
 		this.run	= factors[1];
 		this.scalarCoefficient	= factors[2];
+		// slope
+		double m = (rise / run) * scalarCoefficient;
+
 	}
 
 	/* Getters: */
@@ -50,6 +53,8 @@ class Velocity2 {
 
 	/* Utility methods: */
 
-	// TODO write util methods for velocity
+	void update() {
+
+	}
 
 }

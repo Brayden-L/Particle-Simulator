@@ -11,7 +11,7 @@ class Atom implements Runnable, Pool.Poolable {
     Velocity2   velocity;
     double      gravity;
 
-    Atom(physParticle[]  particles, double[] position, int charge, Velocity2 velocity) {
+    Atom(physParticle[]  particles, double[] position, Velocity2 velocity) {
         this.particles  = particles;
         this.position   = position;
 
@@ -20,10 +20,7 @@ class Atom implements Runnable, Pool.Poolable {
             charge += particle.getCharge();
             gravity += particle.getGravity();
         }
-
-        this.charge     = charge;
         this.velocity   = velocity;
-
     }
 
     /* Getters: */
@@ -79,6 +76,10 @@ class Atom implements Runnable, Pool.Poolable {
         position[1] += velocity.getRise();
     }
 
+    void split() {
+        // TODO write split
+    }
+
     @Override
     public void run() {
         System.out.println("Atom created with " + Arrays.toString(particles) + " at " + Arrays.toString(position) + ".");
@@ -96,7 +97,4 @@ class Atom implements Runnable, Pool.Poolable {
     public void main() {
         this.updatePosition();
     }
-
-
-
 }

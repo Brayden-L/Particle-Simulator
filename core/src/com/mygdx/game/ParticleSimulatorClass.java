@@ -30,12 +30,12 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 	File toml;
 	Map<String, Object> pMap;
 	Toml pToml;
-	Map<Integer[][], Object> environment;
+	physParticle[][] environment;
 
 	public ParticleSimulatorClass() {
 		// https://www.w3schools.com/java/java_files_read.asp
 		// https://github.com/mwanji/toml4j
-		/* Loads TOML file as a File object. */
+		/* Loads TOML file as a File object. */ // TODO change to `./config/particles.toml` for Alpha Build.
 		toml	= new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
 		/* These load the File as TOML. pToml gets set to a Table of Particles, pMap gets set to a Map of pToml. */
 		pToml 	= new Toml().read(toml).getTable("particles");
@@ -66,24 +66,17 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 			double[] velArr = new double[2];
 			for (int i = 0; i < 3; i++) velArr[i] = (double) pToml.getList("particles[" + itr + "].vel").get(i);
 			Velocity2 vel = new Velocity2(velArr);
-			new Thread(
-					// (CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel)
-					new physParticle(
-							gate,
-							pToml.getString("particles[" + itr + "].name"),
-							pToml.getString("particles[" + itr + "].type"),
-							id,
-							pos,
-							vel
-					)
-			).start();
+			physParticle particle = new physParticle(gate, pToml.getString("particles[" + itr + "].name"),
+					pToml.getString("particles[" + itr + "].type"), id, pos, vel);
+			environment[(int) pos[0]][(int) pos[1]] = particle; // TODO properly implement and integrate env w/ pos.
+			new Thread(particle).start();
 			System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
 			itr++;
 		}
 	}
 
 	@Override
-	public void render () {
+	public void render () { // https://github.com/libgdx/libgdx/wiki
 		ScreenUtils.clear(1, 0, 0, 1);
 		batch.begin();
 		batch.draw(img, 0, 0);

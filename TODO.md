@@ -1,10 +1,13 @@
 - [ ] Particle Generator:
   - [x] Generate UUID.
   - [ ] Do sprite wizardry.
+    - [ ] Create and bind Box2d circles to Particles.
+    - [x] Load sprites.
+    - [ ] Bind sprites to Box2d Particle Circles.
   - [x] Start thread.
-  - [x] Load attributes from TOML.
-- [ ] Use screen position instead of / converted to absolute position.
-
+  - [x] Load attributes from TOML. 
+- [ ] Use screen position instead of absolute position / convert to absolute position.
+- [ ] Integrate env with pos and screen pos.
 - [ ] Gravity.
 - [ ] Magnetic Attraction.
 - [ ] Lorentz Force.

@@ -17,7 +17,6 @@ public class physParticle implements Runnable, Pool.Poolable {
     Velocity2 vel;
     double gravity; // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment in for]
 
-
     public final double gc      = 0.0000000000667408;
 	public final double amuKgC  = 0.0000000000000000000000000016605;
 

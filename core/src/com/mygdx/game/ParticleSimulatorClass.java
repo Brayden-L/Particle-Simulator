@@ -64,7 +64,9 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 						"particles[" + itr + "].pos").get(i);
 			} // might be able to replace this ^ with pos[0,1] = pToml.getList("particles[" + itr + "].pos").get(0,1);
 			double[] velArr = new double[2];
-			for (int i = 0; i < 3; i++) velArr[i] = (double) pToml.getList("particles[" + itr + "].vel").get(i);
+			for (int i = 0; i < 3; i++) {
+				velArr[i] = (double) pToml.getList("particles[" + itr + "].vel").get(i);
+			}
 			Velocity2 vel = new Velocity2(velArr);
 			physParticle particle = new physParticle(gate, pToml.getString("particles[" + itr + "].name"),
 					pToml.getString("particles[" + itr + "].type"), id, pos, vel);

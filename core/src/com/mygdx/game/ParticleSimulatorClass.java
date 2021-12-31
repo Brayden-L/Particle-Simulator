@@ -30,6 +30,8 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 	File toml;
 	Map<String, Object> pMap;
 	Toml pToml;
+	File elements;
+	Toml eToml;
 	Map<Integer[][], Object> environment;
 
 	public ParticleSimulatorClass() {
@@ -40,7 +42,8 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 		/* These load the File as TOML. pToml gets set to a Table of Particles, pMap gets set to a Map of pToml. */
 		pToml 	= new Toml().read(toml).getTable("particles");
 		pMap 	= new Toml().read(pToml).toMap();
-
+		elements = new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/phys/data/elements.toml");
+		eToml	= new Toml().read(elements).getTable("elements");
 		//gate = new CyclicBarrier((pMap.size() + 1));
 	}
 

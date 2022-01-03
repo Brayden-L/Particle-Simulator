@@ -53,8 +53,5 @@ public class Velocity2 {
 
 	/* Utility methods: */
 
-	void update() {
-
-	}
 
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -30,7 +31,7 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 	File toml;
 	Map<String, Object> pMap;
 	Toml pToml;
-	physParticle[][] environment;
+	physParticle[] particles;
 
 	public ParticleSimulatorClass() {
 		// https://www.w3schools.com/java/java_files_read.asp
@@ -39,8 +40,7 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 		toml	= new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
 		/* These load the File as TOML. pToml gets set to a Table of Particles, pMap gets set to a Map of pToml. */
 		pToml 	= new Toml().read(toml).getTable("particles");
-		pMap 	= new Toml().read(pToml).toMap();
-
+		pMap 	= pToml.toMap();
 		//gate = new CyclicBarrier((pMap.size() + 1));
 	}
 
@@ -69,8 +69,8 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 			}
 			Velocity2 vel = new Velocity2(velArr);
 			physParticle particle = new physParticle(gate, pToml.getString("particles[" + itr + "].name"),
-					pToml.getString("particles[" + itr + "].type"), id, pos, vel);
-			environment[(int) pos[0]][(int) pos[1]] = particle; // TODO properly implement and integrate env w/ pos.
+					pToml.getString("particles[" + itr + "].type"), id, pos, vel, particles);
+			particles[itr] = particle;
 			new Thread(particle).start();
 			System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
 			itr++;
@@ -93,6 +93,7 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 
 	public void main() throws BrokenBarrierException, InterruptedException {
 		 //gate.await();
+
 	}
 
 }

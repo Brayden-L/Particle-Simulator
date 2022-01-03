@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Pool;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.CyclicBarrier;
+import java.lang.Math;
+import com.mygdx.phys.Velocity2;
 
 public class physParticle implements Runnable, Pool.Poolable {
 
@@ -16,11 +18,13 @@ public class physParticle implements Runnable, Pool.Poolable {
     double[] pos;   //
     Velocity2 vel;
     double gravity; // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment in for]
+    physParticle[] particles;
 
-    public final double gc      = 0.0000000000667408;
-	public final double amuKgC  = 0.0000000000000000000000000016605;
+    public final double GRAVITYCONSTANT = 0.0000000000667408;
+	public final double AMUKGC          = 0.0000000000000000000000000016605;
 
-    public physParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel) {
+    public physParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel,
+                        physParticle[] particles) {
 
         this.type   = type;
 
@@ -28,17 +32,17 @@ public class physParticle implements Runnable, Pool.Poolable {
             case "proton":
                 this.mass           = 1.000727;
                     this.charge     = 1;
-                    this.gravity    = gc * (mass * amuKgC);
+                    this.gravity    = GRAVITYCONSTANT * (mass * AMUKGC);
                     break;
                 case "neutron":
                     this.mass       = 1.000866;
                     this.charge     = 0;
-                    this.gravity    = gc * (mass * amuKgC);
+                    this.gravity    = GRAVITYCONSTANT * (mass * AMUKGC);
                     break;
                 case "electron":
                     this.mass       = 0.0005486;
                     this.charge     = -1;
-                    this.gravity    = gc * (mass * amuKgC);
+                    this.gravity    = GRAVITYCONSTANT * (mass * AMUKGC);
                     break;
                 default:
                     System.out.println("Error, invalid TYPE attribute ascribed to PARTICLE " + id + ".");
@@ -105,9 +109,23 @@ public class physParticle implements Runnable, Pool.Poolable {
 
     /* Util methods: */
 
-    public void gravityPositionUpdate() { // TODO write gravity update
-        this.pos[0] += 0;
-        this.pos[1] += 0;
+    public void forceUpdate() { // TODO write gravity update
+        for (physParticle part : particles) {
+            // Distance = √((x2-x1)^2+(y2-y1)^2)
+            // Force of Attraction = Gravitation Constant * (Mass1 * Mass2) / distance^2
+            double distance = Math.sqrt(Math.pow((part.pos[0] - this.pos[0]) ,2) + Math.pow((part.pos[1] - this.pos[1]), 2));
+            double gForce   = (GRAVITYCONSTANT * (this.mass * part.mass)) / Math.pow(distance, 2);
+            System.out.println(gForce); // debug, remove
+        }
+        //vel.setRise();  // TODO adjust velocity accordingly
+        //vel.setRun();
+    }
+
+    public void positionUpdate() {  // TODO move particle on screen & change position in environment[][].
+        double[] cPos = this.pos;
+        this.pos[0] += vel.getRun();
+        this.pos[1] += vel.getRise();
+        System.out.println("Moved particle " + id + " from " + Arrays.toString(cPos) + " to " + Arrays.toString(pos) + ".");
     }
 
     @Override
@@ -130,8 +148,7 @@ public class physParticle implements Runnable, Pool.Poolable {
 
     void main() {
         // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment # in for loop]
-        vel.update();
-        //pos.update(); // TODO write position update code
+        this.forceUpdate();
     } // TODO write particle behavior
 
 }

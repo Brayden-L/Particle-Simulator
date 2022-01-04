@@ -1,14 +1,3 @@
-#[environment.dimensions]
-#x = 100
-#y = 100
-#z = 100
-
-[[particles]]
-name = "John the Particle"
-type = "electron"
-pos = [12.3, 4.8]
-
-[[particles]]
-name = "Larry the Proton"
-type = "proton"
-pos = [12.9, 48.6]
+[particles]
+e1 = { name = "John the Particle", type = "electron", pos = [12.3, 4.8], vel = [3.14, 69.420, 8.00] }
+p1 = { name = "Larry the Proton", type = "proton", pos = [12.9, 48.6], vel = [3.14, 69.420, 8.00] }

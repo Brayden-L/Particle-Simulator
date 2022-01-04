@@ -5,18 +5,18 @@ import com.badlogic.gdx.utils.Pool;
 import java.util.Arrays;
 
 class Atom implements Runnable, Pool.Poolable {
-    physParticle[]  particles;
+    PhysParticle[]  particles;
     double[]    position;
     int         charge;
     Velocity2   velocity;
     double      gravity;
 
-    Atom(physParticle[]  particles, double[] position, Velocity2 velocity) {
+    Atom(PhysParticle[]  particles, double[] position, Velocity2 velocity) {
         this.particles  = particles;
         this.position   = position;
 
         /* Calculate an Atom's charge and gravity: */
-        for (physParticle particle : particles) {
+        for (PhysParticle particle : particles) {
             charge += particle.getCharge();
             gravity += particle.getGravity();
         }
@@ -25,7 +25,7 @@ class Atom implements Runnable, Pool.Poolable {
 
     /* Getters: */
 
-    public physParticle[] getParticles() {
+    public PhysParticle[] getParticles() {
         return particles;
     }
 
@@ -47,7 +47,7 @@ class Atom implements Runnable, Pool.Poolable {
 
     /* Setters: */
 
-    public void setParticles(physParticle[] particles) {
+    public void setParticles(PhysParticle[] particles) {
         this.particles = particles;
     }
 
@@ -87,7 +87,7 @@ class Atom implements Runnable, Pool.Poolable {
 
     @Override
     public void reset() {
-        physParticle[]  particles   = null;
+        PhysParticle[]  particles   = null;
         double[]    position        = null;
         int         charge          = 0;
         Velocity2   velocity        = null;

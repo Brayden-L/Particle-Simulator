@@ -1,13 +1,14 @@
 package com.mygdx.phys;
 
 import com.badlogic.gdx.utils.Pool;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.CyclicBarrier;
 import java.lang.Math;
-import com.mygdx.phys.Velocity2;
 
-public class physParticle implements Runnable, Pool.Poolable {
+public class PhysParticle implements Runnable, Pool.Poolable {
 
     CyclicBarrier gate;
     String  name;
@@ -18,13 +19,13 @@ public class physParticle implements Runnable, Pool.Poolable {
     double[] pos;   //
     Velocity2 vel;
     double gravity; // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment in for]
-    physParticle[] particles;
+    ArrayList<PhysParticle> particles;
 
     public final double GRAVITYCONSTANT = 0.0000000000667408;
 	public final double AMUKGC          = 0.0000000000000000000000000016605;
 
-    public physParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel,
-                        physParticle[] particles) {
+    public PhysParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel,
+                        ArrayList<PhysParticle> particles) {
 
         this.type   = type;
 
@@ -53,6 +54,7 @@ public class physParticle implements Runnable, Pool.Poolable {
             this.id     = id;
             this.pos    = pos;
             this.vel    = vel;
+            this.particles = particles;
     }
     // Getters and Setters take up needless space with line-breaks between them.
     /* Getters: */
@@ -110,7 +112,7 @@ public class physParticle implements Runnable, Pool.Poolable {
     /* Util methods: */
 
     public void forceUpdate() { // TODO write gravity update
-        for (physParticle part : particles) {
+        for (PhysParticle part : particles) {
             // Distance = √((x2-x1)^2+(y2-y1)^2)
             // Force of Attraction = Gravitation Constant * (Mass1 * Mass2) / distance^2
             double distance = Math.sqrt(Math.pow((part.pos[0] - this.pos[0]) ,2) + Math.pow((part.pos[1] - this.pos[1]), 2));

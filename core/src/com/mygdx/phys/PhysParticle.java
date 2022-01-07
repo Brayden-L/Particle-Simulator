@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Pool;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.lang.Math;
 
@@ -20,6 +21,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     Velocity2 vel;
     double gravity; // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment in for]
     ArrayList<PhysParticle> particles;
+    double gForce = 0;
 
     public final double GRAVITYCONSTANT = 0.0000000000667408;
 	public final double AMUKGC          = 0.0000000000000000000000000016605;
@@ -27,6 +29,8 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     public PhysParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel,
                         ArrayList<PhysParticle> particles) {
 
+        this.gate = gate;
+        this.name = name;
         this.type   = type;
 
         switch (type) {
@@ -110,13 +114,28 @@ public class PhysParticle implements Runnable, Pool.Poolable {
 
 
     /* Util methods: */
+    // https://stackoverflow.com/questions/5124743/algorithm-for-simplifying-decimal-to-fractions
+    public int[] doubleToFraction(double x) {
+        double errorMargin = 0.000001;
+        int[] fraction = new int[2];
+        int n = (int) Math.floor(x);
+        x -= n;
+        if (x < errorMargin) {
+            fraction[0] = n;
+            fraction[1] = 1;
+        } else if (1 - errorMargin < x) {
+            fraction[0] = n + 1;
+            fraction[1] = 1;
+        }
+        return fraction;
+    }
 
     public void forceUpdate() { // TODO write gravity update
         for (PhysParticle part : particles) {
             // Distance = √((x2-x1)^2+(y2-y1)^2)
             // Force of Attraction = Gravitation Constant * (Mass1 * Mass2) / distance^2
             double distance = Math.sqrt(Math.pow((part.pos[0] - this.pos[0]) ,2) + Math.pow((part.pos[1] - this.pos[1]), 2));
-            double gForce   = (GRAVITYCONSTANT * (this.mass * part.mass)) / Math.pow(distance, 2);
+            gForce   += (GRAVITYCONSTANT * (this.mass * part.mass)) / Math.pow(distance, 2);
             System.out.println(gForce); // debug, remove
         }
         //vel.setRise();  // TODO adjust velocity accordingly
@@ -132,7 +151,13 @@ public class PhysParticle implements Runnable, Pool.Poolable {
 
     @Override
     public void run() {
-        //gate.await();
+        /* Count Particle toward CyclicBarrier: */
+        try {
+            gate.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+        /* Print Particle Started to command-line. */
         System.out.println("Started particle <" + id + "> at " + Arrays.toString(pos) + ".");
     }
 
@@ -148,9 +173,10 @@ public class PhysParticle implements Runnable, Pool.Poolable {
         double gravity  = 0;
     }
 
-    void main() {
-        // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment # in for loop]
+    public void main(String[] args) {
+        /* Particle behavior: */
         this.forceUpdate();
-    } // TODO write particle behavior
+        System.out.println("Main method, yay!");
+    }
 
 }

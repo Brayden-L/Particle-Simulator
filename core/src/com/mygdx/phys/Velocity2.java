@@ -1,5 +1,10 @@
 package com.mygdx.phys;
-
+/**
+ * The idea behind this 2d Velocity implementation comes in three parts:
+ * 	[RISE, RUN, SCALAR]
+ * These components translate to SLOPE and DISTANCE, which in turn translate to the DIRECTION and MAGNITUDE vector
+ * components.
+ * **/
 public class Velocity2 {
 	double[] factors;
 	double rise;

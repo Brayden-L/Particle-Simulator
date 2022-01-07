@@ -40,11 +40,11 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 		pMap 	= new Toml().read(pToml).toMap();
 		System.out.println(pMap);
 		System.out.println(pMap.keySet()); // yields [e1, p1]
-		//gate = new CyclicBarrier((pMap.size() + 1));
+		gate = new CyclicBarrier((pMap.size() + 1));
 	}
 
 	@Override
-	public void create () {
+	public void create()  {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		AssetManager manager = new AssetManager();
@@ -52,7 +52,6 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 		manager.load("neutron.png", Texture.class);
 		manager.load("proton.png", Texture.class);
 		/* This loads the Particles from the particles.toml file: */
-		int itr = 0;	// This is the cleanest way of getting the iteration counter.
 		for (String key : pMap.keySet()) {
 			String name = pToml.getString(key + ".name");
 			String type = pToml.getString(key + ".type");
@@ -78,7 +77,11 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 			particles.add(particle);
 			new Thread(particle).start();
 			System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
-			itr++;
+		}
+		try {
+			gate.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			e.printStackTrace();
 		}
 	}
 

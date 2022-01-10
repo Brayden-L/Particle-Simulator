@@ -134,9 +134,20 @@ public class PhysParticle implements Runnable, Pool.Poolable {
         for (PhysParticle part : particles) {
             // Distance = √((x2-x1)^2+(y2-y1)^2)
             // Force of Attraction = Gravitation Constant * (Mass1 * Mass2) / distance^2
-            double distance = Math.sqrt(Math.pow((part.pos[0] - this.pos[0]) ,2) + Math.pow((part.pos[1] - this.pos[1]), 2));
+            double distance =
+                    Math.sqrt(
+                            Math.pow(
+                                    (part.pos[0] - this.pos[0]), 2
+                            ) + Math.pow(
+                                    (part.pos[1] - this.pos[1]), 2
+                            )
+                    );
+            System.out.println("distance of " + name + " to " + part.name + ": " + distance);
             gForce   += (GRAVITYCONSTANT * (this.mass * part.mass)) / Math.pow(distance, 2);
-            System.out.println(gForce); // debug, remove
+            System.out.println("gForce of " + name + ": " + gForce); // debug, remove
+            System.out.println(
+                    "GRAV NUM THING "+(1.000727 * 0.0005486 * 0.0000000000667408) / Math.pow(43.80410939626555, 2)
+            );
         }
         //vel.setRise();  // TODO adjust velocity accordingly
         //vel.setRun();
@@ -159,6 +170,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
         }
         /* Print Particle Started to command-line. */
         System.out.println("Started particle <" + id + "> at " + Arrays.toString(pos) + ".");
+        this.forceUpdate();
     }
 
     @Override

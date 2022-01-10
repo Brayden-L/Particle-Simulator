@@ -57,14 +57,14 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 			String type = pToml.getString(key + ".type");
 			new UUID(128, 128);
 			UUID id = UUID.randomUUID();
-			double[] pos = new double[2];					// Despite "magic numbers" being discouraged, the solutions
-			pos[0] = pToml.getDouble(key + ".pos[0]"); // here, in my opinion, are cleaner and more readable than
-			pos[1] = pToml.getDouble(key + ".pos[1]"); // using a "for" loop to fill out the values.
+			double[] pos = new double[2];						// Despite "magic numbers" being discouraged, the solutions
+			pos[0] = pToml.getDouble(key + ".pos[0]"); 	// here, in my opinion, are cleaner and more readable than
+			pos[1] = pToml.getDouble(key + ".pos[1]"); 	// using a "for" loop to fill out the values.
 			double[] velArr = new double[3];
 			velArr[0] = pToml.getDouble(key + ".vel[0]");
 			velArr[1] = pToml.getDouble(key + ".vel[1]");
 			velArr[2] = pToml.getDouble(key + ".vel[2]");
-			Velocity2 vel = new Velocity2(velArr);			// This basically casts the vel from the TOML to Velocity2.
+			Velocity2 vel = new Velocity2(velArr);				// This basically casts the vel from the TOML to Velocity2.
 			PhysParticle particle = new PhysParticle(
 					gate,
 					name,
@@ -98,10 +98,4 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 		batch.dispose();
 		img.dispose();
 	}
-
-	public void main() throws BrokenBarrierException, InterruptedException {
-		 //gate.await();
-
-	}
-
 }

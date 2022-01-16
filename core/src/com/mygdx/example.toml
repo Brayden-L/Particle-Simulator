@@ -1,13 +1,9 @@
-[particles]
-e1 = {
-    name = "John the Particle",
-    type = "electron",
-    pos = [0.00, 0.00],
-    vel = [3.14, 69.420, 8.00]
-}
-p1 = {
-    name = "Larry the Proton",
-    type = "proton",
-    pos = [900.00, 500.00],
-    vel = [3.14, 69.420, 8.00]
-}
+[[particles]]
+type = "electron"
+pos  = [0, 0]
+vel  = [3.14, 69.420, 8.00]
+
+[[particles]]
+type = "proton"
+pos = [900, 500]
+vel = [3.14, 69.420, 8.00]

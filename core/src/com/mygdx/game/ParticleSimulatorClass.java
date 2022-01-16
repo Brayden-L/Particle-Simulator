@@ -29,6 +29,8 @@ public class ParticleSimulatorClass implements ApplicationListener {
 	public ArrayList<PhysParticle> particles = new ArrayList<>();
 	public HashMap<String, Texture> textureMap = new HashMap<>();
 
+	public List<Toml> pTables;
+
 	public int w;
 	public int h;
 
@@ -41,12 +43,9 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		// https://github.com/mwanji/toml4j
 		/* Loads TOML file as a File object. */ // TODO change to `./config/particles.toml` for Alpha Build.
 		toml	= new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
-		/* These load the File as TOML. pToml gets set to a Table of Particles, pMap gets set to a Map of pToml. */
-		pToml 	= new Toml().read(toml).getTable("particles");
-		pMap 	= new Toml().read(pToml).toMap();
+		pTables = new Toml().read(toml).getTables("particles");
 		System.out.println(pMap);
-		System.out.println(pMap.keySet()); // yields [e1, p1]
-		gate = new CyclicBarrier((pMap.size() + 1));
+		gate = new CyclicBarrier((pTables.size() + 1));
 	}
 
 	@Override
@@ -59,31 +58,24 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		textureMap.put("electron", new Texture("electron.png"));
 
 		/* This loads the Particles from the particles.toml file: */
-		for (String key : pMap.keySet()) {
-			String name = pToml.getString(key + ".name");
-			String type = pToml.getString(key + ".type");
-			new UUID(128, 128);
-			UUID id = UUID.randomUUID();
-			double[] pos = new double[2];						// Despite "magic numbers" being discouraged, the solutions
-			pos[0] = pToml.getDouble(key + ".pos[0]"); 	// here, in my opinion, are cleaner and more readable than
-			pos[1] = pToml.getDouble(key + ".pos[1]"); 	// using a "for" loop to fill out the values.
+		int itr = 0;
+		for (Toml part : pTables) {
+			String type = pTables.get(itr).getString("type");
+			new UUID(64, 64);		// Despite "magic numbers" being discouraged, the solutions
+			UUID id = UUID.randomUUID();	// here, in my opinion, are cleaner and more readable than
+			double[] pos = new double[2];	// using a "for" loop to fill out the values.
+			pos[0] = pTables.get(itr).getLong("pos[0]");
+			pos[1] = pTables.get(itr).getLong("pos[1]");
 			double[] velArr = new double[3];
-			velArr[0] = pToml.getDouble(key + ".vel[0]");
-			velArr[1] = pToml.getDouble(key + ".vel[1]");
-			velArr[2] = pToml.getDouble(key + ".vel[2]");
-			Velocity2 vel = new Velocity2(velArr);				// This basically casts the vel from the TOML to Velocity2.
-			PhysParticle particle = new PhysParticle(
-					gate,
-					name,
-					type,
-					id,
-					pos,
-					vel,
-					particles	// Don't worry about reference or value, it'll probably work.
-			);
+			velArr[0] = pTables.get(itr).getDouble("vel[0]");
+			velArr[1] = pTables.get(itr).getDouble("vel[1]");
+			velArr[2] = pTables.get(itr).getDouble("vel[2]");
+			Velocity2 vel = new Velocity2(velArr);	// This basically casts the vel from the TOML to Velocity2.
+			PhysParticle particle = new PhysParticle(gate, type, id, pos, vel, particles);
 			particles.add(particle);
 			new Thread(particle).start();
 			System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
+			itr++;
 		}
 		try {
 			gate.await();

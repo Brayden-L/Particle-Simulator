@@ -12,12 +12,11 @@ import java.lang.Math;
 public class PhysParticle implements Runnable, Pool.Poolable {
 
     CyclicBarrier gate;
-    String  name;
-    String  type;   //
-    double  mass;   //
-    int     charge; //
-    UUID    id;     //
-    double[] pos;   //
+    String  type;
+    double  mass;
+    int     charge;
+    UUID    id;
+    double[] pos;
     Velocity2 vel;
     double gravity; // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment in for]
     ArrayList<PhysParticle> particles;
@@ -26,10 +25,9 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     public final double GRAVITYCONSTANT = 0.0000000000667408;
 	public final double AMUKGC          = 0.0000000000000000000000000016605;
 
-    public PhysParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel, ArrayList<PhysParticle> particles) {
+    public PhysParticle(CyclicBarrier gate, String type, UUID id, double[] pos, Velocity2 vel, ArrayList<PhysParticle> particles) {
 
         this.gate = gate;
-        this.name = name;
         this.type   = type;
 
         switch (type) {
@@ -61,9 +59,6 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     }
     // Getters and Setters take up needless space with line-breaks between them.
     /* Getters: */
-    public String getName() {
-        return name;
-    }
     public String getType() {
         return type;
     }
@@ -86,9 +81,6 @@ public class PhysParticle implements Runnable, Pool.Poolable {
         return gravity;
     }
     /* Setters: */
-    public void setName(String name) {
-        this.name = name;
-    }
     public void setType(String type) {
         this.type = type;
     }
@@ -141,9 +133,9 @@ public class PhysParticle implements Runnable, Pool.Poolable {
                                     (part.pos[1] - this.pos[1]), 2
                             )
                     );
-            System.out.println("distance of " + name + " to " + part.name + ": " + distance);
+            System.out.println("distance of " + id + " to " + part.id + ": " + distance);
             gForce   += (GRAVITYCONSTANT * (this.mass * part.mass)) / Math.pow(distance, 2);
-            System.out.println("gForce of " + name + ": " + gForce); // debug, remove
+            System.out.println("gForce of " + id + ": " + gForce); // debug, remove
  //           System.out.println(
  //                   "GRAV NUM THING "+(1.000727 * 0.0005486 * 0.0000000000667408) / Math.pow(43.80410939626555, 2)
  //           );

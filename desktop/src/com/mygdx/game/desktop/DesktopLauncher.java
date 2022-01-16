@@ -17,7 +17,7 @@ public class DesktopLauncher  {
 
 		try {
 //			new LwjglApplication(new ParticleSimulatorClass(args[0]), config);
-			new LwjglApplication(new ParticleSimulatorClass(), config);
+			new LwjglApplication(new ParticleSimulatorClass(config.width, config.height), config);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}

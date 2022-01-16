@@ -12,12 +12,15 @@ public class Velocity2 {
 	double scalarCoefficient;
 
 	public Velocity2(double[] factors) {
+		this.factors = factors;
 		this.rise 	= factors[0];
 		this.run	= factors[1];
 		this.scalarCoefficient	= factors[2];
-		// slope
-		double m = (rise / run) * scalarCoefficient;
-
+		// normalize slope for the first time
+		double slope = rise / run;
+		int[] tmp = doubleToFraction(slope);
+		factors[0] = tmp[0];
+		factors[1] = tmp[1];
 	}
 
 	/* Getters: */
@@ -64,4 +67,13 @@ public class Velocity2 {
 		}
 		return fraction;
 	}
+
+	public void update(double gForce) {
+		double slope = rise / run;
+		int[] tmp = doubleToFraction(slope);
+		rise 	= tmp[0];
+		run		= tmp[1];
+		scalarCoefficient += gForce;
+	}
+
 }

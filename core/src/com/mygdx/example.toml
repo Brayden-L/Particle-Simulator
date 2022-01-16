@@ -2,12 +2,12 @@
 e1 = {
     name = "John the Particle",
     type = "electron",
-    pos = [12.3, 4.8],
+    pos = [0.00, 0.00],
     vel = [3.14, 69.420, 8.00]
 }
 p1 = {
     name = "Larry the Proton",
     type = "proton",
-    pos = [12.9, 48.6],
+    pos = [900.00, 500.00],
     vel = [3.14, 69.420, 8.00]
 }

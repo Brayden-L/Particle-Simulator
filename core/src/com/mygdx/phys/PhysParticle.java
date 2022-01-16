@@ -26,8 +26,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     public final double GRAVITYCONSTANT = 0.0000000000667408;
 	public final double AMUKGC          = 0.0000000000000000000000000016605;
 
-    public PhysParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel,
-                        ArrayList<PhysParticle> particles) {
+    public PhysParticle(CyclicBarrier gate, String name, String type, UUID id, double[] pos, Velocity2 vel, ArrayList<PhysParticle> particles) {
 
         this.gate = gate;
         this.name = name;
@@ -145,12 +144,11 @@ public class PhysParticle implements Runnable, Pool.Poolable {
             System.out.println("distance of " + name + " to " + part.name + ": " + distance);
             gForce   += (GRAVITYCONSTANT * (this.mass * part.mass)) / Math.pow(distance, 2);
             System.out.println("gForce of " + name + ": " + gForce); // debug, remove
-            System.out.println(
-                    "GRAV NUM THING "+(1.000727 * 0.0005486 * 0.0000000000667408) / Math.pow(43.80410939626555, 2)
-            );
+ //           System.out.println(
+ //                   "GRAV NUM THING "+(1.000727 * 0.0005486 * 0.0000000000667408) / Math.pow(43.80410939626555, 2)
+ //           );
         }
-        //vel.setRise();  // TODO adjust velocity accordingly
-        //vel.setRun();
+        vel.update(gForce);
     }
 
     public void positionUpdate() {  // TODO move particle on screen & change position in environment[][].

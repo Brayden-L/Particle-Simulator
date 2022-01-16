@@ -1,36 +1,42 @@
 /*
-    Copyright (C) 2021  Brayden L.
+    Copyright (C) 2021-2022  Brayden L.
 */
 
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import com.mygdx.phys.PhysParticle;
 import com.mygdx.phys.Velocity2;
 import com.moandjiezana.toml.Toml;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
-public class ParticleSimulatorClass extends ApplicationAdapter {
+public class ParticleSimulatorClass implements ApplicationListener {
 	SpriteBatch batch;
-	Texture img;
 	CyclicBarrier gate;
 	File toml;
 	Map<String, Object> pMap;
 	Toml pToml;
 	public ArrayList<PhysParticle> particles = new ArrayList<>();
+	public HashMap<String, Texture> textureMap = new HashMap<>();
 
-	public ParticleSimulatorClass() {
+	public int w;
+	public int h;
+
+	public ParticleSimulatorClass(int width, int height) {
+
+		this.w = width 	/ 2;
+		this.h = height / 2;
+
 		// https://www.w3schools.com/java/java_files_read.asp
 		// https://github.com/mwanji/toml4j
 		/* Loads TOML file as a File object. */ // TODO change to `./config/particles.toml` for Alpha Build.
@@ -46,11 +52,12 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 	@Override
 	public void create()  {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-		AssetManager manager = new AssetManager();
-		manager.load("electron.png", Texture.class);
-		manager.load("neutron.png", Texture.class);
-		manager.load("proton.png", Texture.class);
+		// fill out texture map
+		// Gdx.files.internal
+		textureMap.put("proton", new Texture("proton.png"));
+		textureMap.put("neutron", new Texture("neutron.png"));
+		textureMap.put("electron", new Texture("electron.png"));
+
 		/* This loads the Particles from the particles.toml file: */
 		for (String key : pMap.keySet()) {
 			String name = pToml.getString(key + ".name");
@@ -86,16 +93,37 @@ public class ParticleSimulatorClass extends ApplicationAdapter {
 	}
 
 	@Override
-	public void render () { // https://github.com/libgdx/libgdx/wiki
-		ScreenUtils.clear(1, 0, 0, 1);
+	public void resize(int width, int height) {
+
+	}
+
+	@Override
+	public void render () { // basically the "main loop"
+		// clears screen and sets a color
+		ScreenUtils.clear(0, 0, 0, 1);
+		// draws the stuff
 		batch.begin();
-		batch.draw(img, 0, 0);
+		for (PhysParticle part : particles) {
+			/* Offset position to screen position */
+			int x = (int) part.getPos()[0] + w;
+			int y = (int) part.getPos()[1] + h;
+			batch.draw(textureMap.get(part.getType()), x, y);
+		}
 		batch.end();
 	}
-	
+
+	@Override
+	public void pause() {
+
+	}
+
+	@Override
+	public void resume() {
+
+	}
+
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
 	}
 }

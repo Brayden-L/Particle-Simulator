@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2021-2022  Brayden L.
+    Copyright (C) 2022  Brayden L.
 */
 
 package com.mygdx.game;

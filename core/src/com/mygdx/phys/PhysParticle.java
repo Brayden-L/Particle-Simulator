@@ -1,3 +1,7 @@
+/*
+    Copyright (C) 2022 Brayden L.
+*/
+
 package com.mygdx.phys;
 
 import com.badlogic.gdx.utils.Pool;

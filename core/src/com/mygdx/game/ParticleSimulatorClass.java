@@ -4,7 +4,6 @@
 
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -55,7 +54,7 @@ public class ParticleSimulatorClass implements ApplicationListener {
 
 		/* This loads the Particles from the particles.toml file: */
 		int itr = 0;
-		for (Toml part : pTables) {
+		for (Toml ignored : pTables) {
 			String type = pTables.get(itr).getString("type");
 			new UUID(64, 64);		// Despite "magic numbers" being discouraged, the solutions
 			UUID id = UUID.randomUUID();	// here, in my opinion, are cleaner and more readable than

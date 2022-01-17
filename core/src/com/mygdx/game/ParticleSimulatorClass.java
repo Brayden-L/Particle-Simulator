@@ -6,16 +6,13 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import com.mygdx.phys.PhysParticle;
 import com.mygdx.phys.Velocity2;
 import com.moandjiezana.toml.Toml;
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -23,9 +20,8 @@ import java.util.concurrent.CyclicBarrier;
 public class ParticleSimulatorClass implements ApplicationListener {
 	SpriteBatch batch;
 	CyclicBarrier gate;
-	File toml;
+	Toml toml;
 	Map<String, Object> pMap;
-	Toml pToml;
 	public ArrayList<PhysParticle> particles = new ArrayList<>();
 	public HashMap<String, Texture> textureMap = new HashMap<>();
 
@@ -34,7 +30,7 @@ public class ParticleSimulatorClass implements ApplicationListener {
 	public int w;
 	public int h;
 
-	public ParticleSimulatorClass(int width, int height) {
+	public ParticleSimulatorClass(int width, int height, Toml toml) {
 
 		this.w = width 	/ 2;
 		this.h = height / 2;
@@ -42,7 +38,7 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		// https://www.w3schools.com/java/java_files_read.asp
 		// https://github.com/mwanji/toml4j
 		/* Loads TOML file as a File object. */ // TODO change to `./config/particles.toml` for Alpha Build.
-		toml	= new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
+		this.toml = toml;
 		pTables = new Toml().read(toml).getTables("particles");
 		System.out.println(pMap);
 		gate = new CyclicBarrier((pTables.size() + 1));

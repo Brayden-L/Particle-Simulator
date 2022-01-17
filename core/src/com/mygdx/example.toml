@@ -8,6 +8,21 @@ pos  = [0, 0]
 vel  = [3.14, 69.420, 8.00]
 
 [[particles]]
+type = "neutron"
+pos = [732, 600]
+vel = [3.14, 69.420, 8.00]
+
+[[particles]]
 type = "proton"
-pos = [900, 500]
+pos = [574, 123]
+vel = [3.14, 69.420, 8.00]
+
+[[particles]]
+type = "neutron"
+pos = [876, 543]
+vel = [3.14, 69.420, 8.00]
+
+[[particles]]
+type = "proton"
+pos = [345, 678]
 vel = [3.14, 69.420, 8.00]

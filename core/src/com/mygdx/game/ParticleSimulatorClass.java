@@ -8,13 +8,13 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-
 import com.mygdx.phys.PhysParticle;
 import com.mygdx.phys.Velocity2;
 import com.moandjiezana.toml.Toml;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+
 
 public class ParticleSimulatorClass implements ApplicationListener {
 	SpriteBatch batch;
@@ -100,17 +100,21 @@ public class ParticleSimulatorClass implements ApplicationListener {
 			int x = part.getPos()[0] + w;
 			int y = part.getPos()[1] + h;
 			// CPU and compiler gods, please forgive me for what I am about to do.
+			/* This cursed series of if-statements is a makeshift window wrap for particles. */
 			if (x >= 1921) {
-				x = 0;
+				x = 1921 - x;
 				part.setPos(x, y - h);
-			} else if (y >= 1081) {
-				y = 0;
+			}
+			if (y >= 1081) {
+				y = 1081 - y;
 				part.setPos(x - w, y);
-			} else if (x < 0) {
-				x = 1920;
+			}
+			if (x < 0) {
+				x = 1920 + x;
 				part.setPos(x, y - h);
-			} else if (y < 0) {
-				y = 1080;
+			}
+			if (y < 0) {
+				y = 1080 + y;
 				part.setPos(x - w, y);
 			}
 			batch.draw(textureMap.get(part.getType()), x, y);

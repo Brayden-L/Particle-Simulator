@@ -5,12 +5,12 @@ rgb     = [0, 0, 0]
 
 [[particles]]
 type = "electron"
-pos  = [0, 0]
+pos  = [-10, 0]
 vel  = [3.14, 69.420, 8.00]
 
 [[particles]]
 type = "neutron"
-pos = [-1, 300]
+pos = [-500, 300]
 vel = [3.14, 69.420, 8.00]
 
 [[particles]]

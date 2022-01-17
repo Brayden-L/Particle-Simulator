@@ -1,6 +1,7 @@
 [configuration]
 width   = 1920
 height  = 1080
+rgb     = [0, 0, 0]
 
 [[particles]]
 type = "electron"
@@ -9,20 +10,20 @@ vel  = [3.14, 69.420, 8.00]
 
 [[particles]]
 type = "neutron"
-pos = [732, 600]
+pos = [-1, 300]
 vel = [3.14, 69.420, 8.00]
 
 [[particles]]
 type = "proton"
-pos = [574, 123]
+pos = [274, 123]
 vel = [3.14, 69.420, 8.00]
 
 [[particles]]
 type = "neutron"
-pos = [876, 543]
+pos = [276, 143]
 vel = [3.14, 69.420, 8.00]
 
 [[particles]]
 type = "proton"
-pos = [345, 678]
+pos = [345, 478]
 vel = [3.14, 69.420, 8.00]

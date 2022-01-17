@@ -25,11 +25,19 @@ public class ParticleSimulatorClass implements ApplicationListener {
 	public HashMap<String, Texture> textureMap 	= new HashMap<>();
 	public int w;
 	public int h;
+	public List<Integer> rgb = new ArrayList<>();
 
-	public ParticleSimulatorClass(int width, int height, Toml toml) {
+	public int r;
+	public int g;
+	public int b;
 
+	public ParticleSimulatorClass(int width, int height, Toml toml, int[] rgb) {
+		// window configuration
 		this.w = width 	/ 2;
 		this.h = height / 2;
+		this.r = rgb[0];
+		this.g = rgb[1];
+		this.b = rgb[2];
 
 		// https://www.w3schools.com/java/java_files_read.asp
 		// https://github.com/mwanji/toml4j
@@ -55,9 +63,9 @@ public class ParticleSimulatorClass implements ApplicationListener {
 			String type = pTables.get(itr).getString("type");
 			new UUID(32, 32);		// Despite "magic numbers" being discouraged, the solutions
 			UUID id = UUID.randomUUID();	// here, in my opinion, are cleaner and more readable than
-			double[] pos = new double[2];	// using a "for" loop to fill out the values.
-			pos[0] = pTables.get(itr).getLong("pos[0]");
-			pos[1] = pTables.get(itr).getLong("pos[1]");
+			int[] pos = new int[2];	// using a "for" loop to fill out the values.
+			pos[0] = Math.round(pTables.get(itr).getLong("pos[0]"));
+			pos[1] = Math.round(pTables.get(itr).getLong("pos[1]"));
 			double[] velArr = new double[3];
 			velArr[0] = pTables.get(itr).getDouble("vel[0]");
 			velArr[1] = pTables.get(itr).getDouble("vel[1]");
@@ -82,15 +90,29 @@ public class ParticleSimulatorClass implements ApplicationListener {
 	}
 
 	@Override
-	public void render () { // basically the "main loop"
+	public void render () {
 		// clears screen and sets a color
-		ScreenUtils.clear(0, 0, 0, 1);
+		ScreenUtils.clear(r, g, b, 1);
 		// draws the stuff
 		batch.begin();
 		for (PhysParticle part : particles) {
 			/* Offset position to screen position */
-			int x = (int) part.getPos()[0] + w;
-			int y = (int) part.getPos()[1] + h;
+			int x = part.getPos()[0] + w;
+			int y = part.getPos()[1] + h;
+			// CPU and compiler gods, please forgive me for what I am about to do.
+			if (x >= 1921) {
+				x = 0;
+				part.setPos(x, y - h);
+			} else if (y >= 1081) {
+				y = 0;
+				part.setPos(x - w, y);
+			} else if (x < 0) {
+				x = 1920;
+				part.setPos(x, y - h);
+			} else if (y < 0) {
+				y = 1080;
+				part.setPos(x - w, y);
+			}
 			batch.draw(textureMap.get(part.getType()), x, y);
 		}
 		batch.end();

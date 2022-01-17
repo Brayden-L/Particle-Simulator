@@ -1,11 +1,11 @@
 # Welcome to Particle Simulator
 A piece of educational software by Brayden L, written in Java 8 with the LibGDX framework.
 ## Contents:
-- [Specification](#Specification)
-- [How to Use](#Instructions)
+- [Specification](#specification)
+- [How to Use](#instructions)
 - [JavaDoc](javadoc/index.html)
 - [Source code](https://github.com/Brayden-L/Particle-Simulator)
-- [Resources Used](#Resources)
+- [Resources Used](#resources)
 
 # Specification
 [Particle Simulator](https://github.com/Brayden-L/Particle-Simulator) uses [TOML](https://toml.io/), 
@@ -15,6 +15,7 @@ interactions, with [LibGDX](https://libgdx.com/). The configuration specificatio
 [configuration]
 width   = 1920
 height  = 1080
+rgb     = [0, 0, 0]
 
 [[particles]]
 type = "electron"
@@ -26,7 +27,8 @@ type = "proton"
 pos = [900, 500]
 vel = [3.14, 69.420, 8.00]
 ```
-- `[configuration]` parameters define the window size, the default values fit the average 1080p monitor.
+- `[configuration]` parameters width and height define the window size, the default values fit the average 1080p monitor.
+- `[configuration]` parameter rgb allows the user to define their desired background color via standard RGB color values.
 - `[[particles]]` are a bit more complex. It is an array of tables, a list of lists, so to speak:
   - The `type` parameter defines a type of either proton, neutron, or electron. An error is thrown if an invalid type 
 is supplied.

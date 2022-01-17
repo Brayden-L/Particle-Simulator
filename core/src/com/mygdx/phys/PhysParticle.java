@@ -20,7 +20,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     double  mass;
     int     charge;
     UUID    id;
-    double[] pos;
+    int[] pos;
     Velocity2 vel;
     double gravity; // Gravitation Constant * (Mass1 * Mass2) / distance^2 [distance from particle, increment in for]
     ArrayList<PhysParticle> particles;
@@ -29,7 +29,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     public final double GRAVITYCONSTANT = 0.0000000000667408;
 	public final double AMUKGC          = 0.0000000000000000000000000016605;
 
-    public PhysParticle(CyclicBarrier gate, String type, UUID id, double[] pos, Velocity2 vel, ArrayList<PhysParticle> particles) {
+    public PhysParticle(CyclicBarrier gate, String type, UUID id, int[] pos, Velocity2 vel, ArrayList<PhysParticle> particles) {
 
         this.gate = gate;
         this.type   = type;
@@ -69,7 +69,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     public double getMass() {
         return mass;
     }
-    public double[] getPos() {
+    public int[] getPos() {
         return pos;
     }
     public int getCharge() {
@@ -91,8 +91,9 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     public void setMass(double mass) {
         this.mass = mass;
     }
-    public void setPos(double[] pos) {
-        this.pos = pos;
+    public void setPos(int x, int y) {
+        this.pos[0] = x;
+        this.pos[1] = y;
     }
     public void setCharge(int charge) {
         this.charge = charge;
@@ -148,7 +149,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     }
 
     public void positionUpdate() {  // TODO move particle on screen & change position in environment[][].
-        double[] cPos = this.pos;
+        int[] cPos = this.pos;
         this.pos[0] += vel.getRun();
         this.pos[1] += vel.getRise();
         System.out.println("Moved particle " + id + " from " + Arrays.toString(cPos) + " to " + Arrays.toString(pos) + ".");
@@ -174,7 +175,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
         double  mass    = 0;
         int     charge  = 0;
         String  id      = null;
-        double[] pos    = null;
+        int[]   pos     = null;
         Velocity2 vel   = null;
         double gravity  = 0;
     }

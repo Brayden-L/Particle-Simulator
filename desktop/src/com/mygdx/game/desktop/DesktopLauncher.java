@@ -11,6 +11,9 @@ import com.mygdx.game.ParticleSimulatorClass;
 import java.lang.Math;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DesktopLauncher  {
 
@@ -20,13 +23,20 @@ public class DesktopLauncher  {
 		config.title = "Particle Simulator";
 
 		Toml toml = new Toml().read(new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/simulator.toml"));
-		
-		config.width 	= Math.round(toml.getTable("configuration").getLong("width"));
-		config.height 	= Math.round(toml.getTable("configuration").getLong("height"));
+		// This part was repeated, ergo I found it more efficient to replace it with a single line and multiple references.
+		Toml configToml = toml.getTable("configuration");
+
+		config.width 	= Math.round(configToml.getLong("width"));
+		config.height 	= Math.round(configToml.getLong("height"));
+
+		int[] rgb 	= new int[3];
+		rgb [0] 	= Math.round(configToml.getLong("rgb[0]"));
+		rgb [1] 	= Math.round(configToml.getLong("rgb[1]"));
+		rgb [2] 	= Math.round(configToml.getLong("rgb[2]"));
 
 		try {
 //			new LwjglApplication(new ParticleSimulatorClass(args[0]), config);
-			new LwjglApplication(new ParticleSimulatorClass(config.width, config.height, toml), config);
+			new LwjglApplication(new ParticleSimulatorClass(config.width, config.height, toml, rgb), config);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}

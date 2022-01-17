@@ -19,10 +19,10 @@ public class DesktopLauncher  {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Particle Simulator";
 
-		Toml toml = new Toml().read("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/example.toml");
+		Toml toml = new Toml().read(new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/simulator.toml"));
 		
-		config.width = Math.toIntExact(toml.getTable("configuration").getLong("width"));
-		config.height = 1080;
+		config.width 	= Math.round(toml.getTable("configuration").getLong("width"));
+		config.height 	= Math.round(toml.getTable("configuration").getLong("height"));
 
 		try {
 //			new LwjglApplication(new ParticleSimulatorClass(args[0]), config);

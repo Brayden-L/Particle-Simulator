@@ -20,12 +20,9 @@ public class ParticleSimulatorClass implements ApplicationListener {
 	SpriteBatch batch;
 	CyclicBarrier gate;
 	Toml toml;
-	Map<String, Object> pMap;
-	public ArrayList<PhysParticle> particles = new ArrayList<>();
-	public HashMap<String, Texture> textureMap = new HashMap<>();
-
 	public List<Toml> pTables;
-
+	public ArrayList<PhysParticle> particles 	= new ArrayList<>();
+	public HashMap<String, Texture> textureMap 	= new HashMap<>();
 	public int w;
 	public int h;
 
@@ -39,7 +36,7 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		/* Loads TOML file as a File object. */ // TODO change to `./config/particles.toml` for Alpha Build.
 		this.toml = toml;
 		pTables = new Toml().read(toml).getTables("particles");
-		System.out.println(pMap);
+		System.out.println(pTables + " with sizeof "+pTables.size());
 		gate = new CyclicBarrier((pTables.size() + 1));
 	}
 
@@ -56,7 +53,7 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		int itr = 0;
 		for (Toml ignored : pTables) {
 			String type = pTables.get(itr).getString("type");
-			new UUID(64, 64);		// Despite "magic numbers" being discouraged, the solutions
+			new UUID(32, 32);		// Despite "magic numbers" being discouraged, the solutions
 			UUID id = UUID.randomUUID();	// here, in my opinion, are cleaner and more readable than
 			double[] pos = new double[2];	// using a "for" loop to fill out the values.
 			pos[0] = pTables.get(itr).getLong("pos[0]");

@@ -118,6 +118,8 @@ public class ParticleSimulatorClass implements ApplicationListener {
 				part.setPos(x - w, y);
 			}
 			batch.draw(textureMap.get(part.getType()), x, y);
+			part.forceUpdate();
+			part.positionUpdate();
 		}
 		batch.end();
 	}

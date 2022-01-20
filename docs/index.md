@@ -20,12 +20,12 @@ rgb     = [0, 0, 0]
 [[particles]]
 type = "electron"
 pos  = [0, 0]
-vel  = [3.14, 69.420, 8.00]
+vel  = [36, 69]
 
 [[particles]]
 type = "proton"
 pos = [900, 500]
-vel = [3.14, 69.420, 8.00]
+vel = [3, 69]
 ```
 - `[configuration]` parameters width and height define the window size, the default values fit the average 1080p monitor.
 - `[configuration]` parameter rgb allows the user to define their desired background color via standard RGB color values.
@@ -33,13 +33,10 @@ vel = [3.14, 69.420, 8.00]
   - The `type` parameter defines a type of either proton, neutron, or electron. An error is thrown if an invalid type 
 is supplied.
   - The `pos` parameter defines a position; use integers or an error is thrown.
-  - The `vel` parameter is the most complex of the user-specified values. The first two values define direction, the 
-other magnitude.
+  - The `vel` parameter is the most complex of the user-specified values.
     - Value 1 is the "rise" component of slope (change in y).
-    - Value 2 is the "run" component of slope (change in x). Do not worry about magnitude as a result of slope, 
-Particle Simulator will normalize it to 1.
-    - Value 3 is the magnitude component of the velocity vector.
-
+    - Value 2 is the "run" component of slope (change in x).
+    
 # Instructions
 1. Ensure that your machine has [Java installed](https://java.com/en/download/help/download_options.html).
 2. Download the [most recent release](https://github.com/Brayden-L/Particle-Simulator/releases).

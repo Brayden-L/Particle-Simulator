@@ -4,11 +4,6 @@ height  = 1080
 rgb     = [0, 0, 0]
 
 [[particles]]
-type = "electron"
-pos  = [-10, 0]
-vel  = [3.14, 69.420, 8.00]
-
-[[particles]]
 type = "neutron"
 pos = [-500, 300]
 vel = [3.14, 69.420, 8.00]
@@ -18,12 +13,3 @@ type = "proton"
 pos = [274, 123]
 vel = [3.14, 69.420, 8.00]
 
-[[particles]]
-type = "neutron"
-pos = [276, 143]
-vel = [3.14, 69.420, 8.00]
-
-[[particles]]
-type = "proton"
-pos = [345, 478]
-vel = [3.14, 69.420, 8.00]

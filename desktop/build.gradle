@@ -22,6 +22,41 @@ task debug(dependsOn: classes, type: JavaExec) {
     debug = true
 }
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    compile group: 'com.badlogicgames.gdx', name: 'gdx-backend-lwjgl', version: '1.10.0'
+    compile 'com.moandjiezana.toml:toml4j:0.7.2'
+
+    // todo add all .java files here, because this gradle config has imploded
+    compile project(":core")
+    implementation project(":core")
+    api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    
+
+}
+
+project.ext.mainClassName = "com.mygdx.game.desktop.DesktopLauncher"
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+jar {
+    manifest {
+        attributes([
+                'Main-Class': 'com.mygdx.game.desktop.DesktopLauncher'
+        ])
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
 task dist(type: Jar) {
     manifest {
         attributes['Main-Class'] = "com.mygdx.game.desktop.DesktopLauncher"
@@ -34,6 +69,10 @@ task dist(type: Jar) {
 }
 
 
+
+
+
 dist.dependsOn classes
 
 eclipse.project.name = appName + "-desktop"
+

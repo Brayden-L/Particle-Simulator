@@ -30,9 +30,11 @@ public class DesktopLauncher  {
 		rgb [0] 	= Math.round(configToml.getLong("rgb[0]"));
 		rgb [1] 	= Math.round(configToml.getLong("rgb[1]"));
 		rgb [2] 	= Math.round(configToml.getLong("rgb[2]"));
+		// Load sleep constant (seconds)
+		int delay	= Math.round(configToml.getLong("delay"));
 		// Start application
 		try {
-			new LwjglApplication(new ParticleSimulatorClass(config.width, config.height, toml, rgb), config);
+			new LwjglApplication(new ParticleSimulatorClass(config.width, config.height, toml, rgb, delay), config);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}

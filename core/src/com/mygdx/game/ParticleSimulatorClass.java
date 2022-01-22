@@ -14,6 +14,8 @@ import com.moandjiezana.toml.Toml;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.lang.Math;
+import java.util.concurrent.TimeUnit;
 
 
 public class ParticleSimulatorClass implements ApplicationListener {
@@ -26,18 +28,21 @@ public class ParticleSimulatorClass implements ApplicationListener {
 	public int w;
 	public int h;
 	public List<Integer> rgb = new ArrayList<>();
-
 	public int r;
 	public int g;
 	public int b;
+	public int delay;
 
-	public ParticleSimulatorClass(int width, int height, Toml toml, int[] rgb) {
+
+	public ParticleSimulatorClass(int width, int height, Toml toml, int[] rgb, int delay) {
 		// window configuration
-		this.w = width 	/ 2;
-		this.h = height / 2;
+		this.w = width 	/ 2;	// divided by 2 to give a +- range
+		this.h = height / 2;	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		this.r = rgb[0];
 		this.g = rgb[1];
 		this.b = rgb[2];
+		// set delay
+		this.delay = delay;
 
 		// https://www.w3schools.com/java/java_files_read.asp
 		// https://github.com/mwanji/toml4j
@@ -60,18 +65,20 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		/* This loads the Particles from the particles.toml file: */
 		int itr = 0;
 		for (Toml ignored : pTables) {
-			String type = pTables.get(itr).getString("type");
-			new UUID(32, 32);		// Despite "magic numbers" being discouraged, the solutions
-			UUID id = UUID.randomUUID();	// here, in my opinion, are cleaner and more readable than
-			int[] pos = new int[2];	// using a "for" loop to fill out the values.
-			pos[0] = Math.round(pTables.get(itr).getLong("pos[0]"));
-			pos[1] = Math.round(pTables.get(itr).getLong("pos[1]"));
-			double[] velArr = new double[3];
-			velArr[0] = pTables.get(itr).getDouble("vel[0]");
-			velArr[1] = pTables.get(itr).getDouble("vel[1]");
-			velArr[2] = pTables.get(itr).getDouble("vel[2]");
+			Toml currPart = new Toml().read(pTables.get(itr));
+			String type = currPart.getString("type");
+			new UUID(32, 32);
+			UUID id = UUID.randomUUID();
+			int[] pos = {
+					Math.round(currPart.getLong("pos[0]")),
+					Math.round(currPart.getLong("pos[1]"))
+			};
+			int[] velArr = {
+					Math.round(currPart.getLong("vel[0]")),
+					Math.round(currPart.getLong("vel[1]")),
+			};
 			Velocity2 vel = new Velocity2(velArr);	// This basically casts the vel from the TOML to Velocity2.
-			PhysParticle particle = new PhysParticle(gate, type, id, pos, vel, particles);
+			PhysParticle particle = new PhysParticle(gate, type, id, pos, vel, particles, delay);
 			particles.add(particle);
 			new Thread(particle).start();
 			System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
@@ -96,32 +103,42 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		// draws the stuff
 		batch.begin();
 		for (PhysParticle part : particles) {
-			/* Offset position to screen position */
+			/* Offset position to screen position: */
 			int x = part.getPos()[0] + w;
 			int y = part.getPos()[1] + h;
-			// CPU and compiler gods, please forgive me for what I am about to do.
 			/* This cursed series of if-statements is a makeshift window wrap for particles. */
-			if (x >= 1921) {
-				x = 1921 - x;
-				part.setPos(x, y - h);
+
+			while ((x > w) || (y > h) || (x < -w) || (y < -h)) {
+				if (x > w) {
+					x = 2*h - x;
+					part.setPos(x, y - h);
+				}
+				if (y > h) {
+					y = 2*h - y;
+					part.setPos(x - w, y);
+				}
+				if (x < -w) {
+					x = 2*w + x;
+					part.setPos(x, y - h);
+				}
+				if (y < -h) {
+					y = 2*h + y;
+					part.setPos(x - w, y);
+				}
 			}
-			if (y >= 1081) {
-				y = 1081 - y;
-				part.setPos(x - w, y);
-			}
-			if (x < 0) {
-				x = 1920 + x;
-				part.setPos(x, y - h);
-			}
-			if (y < 0) {
-				y = 1080 + y;
-				part.setPos(x - w, y);
-			}
+
 			batch.draw(textureMap.get(part.getType()), x, y);
 			part.forceUpdate();
 			part.positionUpdate();
+			try {
+				part.sleep();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+
 		batch.end();
+		System.out.println("CALLED RENDERER");
 	}
 
 	@Override

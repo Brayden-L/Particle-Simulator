@@ -1,3 +1,0 @@
-- [ ] Gravity.
-- [ ] Magnetic Attraction.
-- [ ] Lorentz Force.

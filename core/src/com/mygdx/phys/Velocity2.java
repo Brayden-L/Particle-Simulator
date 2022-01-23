@@ -1,9 +1,11 @@
 package com.mygdx.phys;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static jdk.nashorn.internal.objects.Global.Infinity;
+import static jdk.nashorn.internal.objects.Global.NaN;
 
-/* This is just slope. */
 
 public class Velocity2 {
 	int[] factors;
@@ -15,20 +17,6 @@ public class Velocity2 {
 		this.rise 	= factors[0];
 		this.run	= factors[1];
 		System.out.println("DEBUG HERE!!!!! "+Arrays.toString(factors));
-		/*
-		* TODO
-		*  FIX THIS:
-		 	DEBUG HERE!!!!! [3.14, 69.42, 8.0]
-			dtf input: 0.04523192163641602
-			math floor: 0
-			DEBUG DTF OUTPUT HERE!!!!! [0.0, 0.0, 8.0]
-			Created particle <aae0738b-b59c-4254-aff0-2df566923592> at [-500, 300].
-			DEBUG HERE!!!!! [3.14, 69.42, 8.0]
-			dtf input: 0.04523192163641602
-			math floor: 0
-			DEBUG DTF OUTPUT HERE!!!!! [0.0, 0.0, 8.0]
-
-		*/
 	}
 
 	/* Getters: */
@@ -53,11 +41,14 @@ public class Velocity2 {
 	}
 
 	/* Utility methods: */
-	public void update(double gForce, double fCoulomb, int[] direction) {
-		System.out.println("VELOCITY UPDATE INPUTS: " + gForce + "\n" + fCoulomb + "\n" + Arrays.toString(direction));
-		this.run	+= (direction[0] * gForce) + fCoulomb;
-		this.rise 	+= (direction[1] * gForce) + fCoulomb;
-		System.out.println("vUpdate: " + Arrays.toString(factors));
+	public void update(double gForce, BigDecimal fCoulomb, int[] direction) {
+		if (gForce == Infinity || Double.isNaN(gForce)) gForce = 0;
+		if (direction[0] == Infinity)  direction[0] = 0;
+		if (direction[1] == Infinity)  direction[1] = 0;
+		run	 += fCoulomb.add(BigDecimal.valueOf(direction[0] * gForce)).doubleValue();
+		rise += fCoulomb.add(BigDecimal.valueOf(direction[1] * gForce)).doubleValue();
+		System.out.println(gForce + "\n" + fCoulomb + "\n" + Arrays.toString(direction));
+		System.out.println("vUpdate: " + run + " " + rise);
 	}
 
 }

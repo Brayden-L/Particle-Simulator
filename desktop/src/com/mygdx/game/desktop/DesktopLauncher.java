@@ -8,18 +8,21 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.moandjiezana.toml.Toml;
 import com.mygdx.game.ParticleSimulatorClass;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.Math;
 import java.io.File;
-import com.badlogic.gdx.ApplicationListener;
-import org.lwjgl.Sys;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class DesktopLauncher  {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Particle Simulator";
-		Toml toml = new Toml().read(new File("/home/fruitcake/Projects/Particle-Simulator/core/src/com/mygdx/simulator.toml"));
+		Toml toml = new Toml().read(new FileInputStream("./simulator.toml"));
 		// This part was repeated, ergo I found it more efficient to replace it with a single line and multiple references.
 		Toml configToml = toml.getTable("configuration");
 		// Window width and height
@@ -32,9 +35,18 @@ public class DesktopLauncher  {
 		rgb [2] 	= Math.round(configToml.getLong("rgb[2]"));
 		// Load sleep constant (seconds)
 		int delay	= Math.round(configToml.getLong("delay"));
+		// CONSTANTS
+		Toml constantsToml = toml.getTable("CONSTANTS");
+		double 	GRAVITYCONSTANT = constantsToml.getDouble("GRAVITYCONSTANT");
+		double 	AMUKGC 			= constantsToml.getDouble("AMUKGC");
+		int 	FARADAY 		= Math.round(constantsToml.getLong("FARADAY"));
+		BigDecimal COULOMB 		= BigDecimal.valueOf(constantsToml.getDouble("COULOMB"));
+		double 	ELECTRIC 		= constantsToml.getDouble("ELECTRIC");
+		double 	PI 				= constantsToml.getDouble("PI");
+		System.out.println(constantsToml.toMap());
 		// Start application
 		try {
-			new LwjglApplication(new ParticleSimulatorClass(config.width, config.height, toml, rgb, delay), config);
+			new LwjglApplication(new ParticleSimulatorClass(config.width, config.height, toml, rgb, delay, GRAVITYCONSTANT, AMUKGC, FARADAY, COULOMB, ELECTRIC, PI), config);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}

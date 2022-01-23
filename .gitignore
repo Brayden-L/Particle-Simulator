@@ -109,5 +109,6 @@ Thumbs.db
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
 
-# more s
 
+RELEASE/
+RELEASE/*

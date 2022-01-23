@@ -11,6 +11,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.phys.PhysParticle;
 import com.mygdx.phys.Velocity2;
 import com.moandjiezana.toml.Toml;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -25,17 +28,26 @@ public class ParticleSimulatorClass implements ApplicationListener {
 	public List<Toml> pTables;
 	public ArrayList<PhysParticle> particles 	= new ArrayList<>();
 	public HashMap<String, Texture> textureMap 	= new HashMap<>();
+	public int width;
+	public int height;
 	public int w;
 	public int h;
-	public List<Integer> rgb = new ArrayList<>();
 	public int r;
 	public int g;
 	public int b;
 	public int delay;
+	double 	GRAVITYCONSTANT;
+	double 	AMUKGC;
+	int 	FARADAY;
+	BigDecimal COULOMB;
+	double 	ELECTRIC;
+	double 	PI;
 
-
-	public ParticleSimulatorClass(int width, int height, Toml toml, int[] rgb, int delay) {
+	public ParticleSimulatorClass(int width, int height, Toml toml, int[] rgb, int delay, double GRAVITYCONSTANT, double AMUKGC, int FARADAY,
+								  BigDecimal COULOMB, double ELECTRIC, double PI) {
 		// window configuration
+		this.width = width;
+		this.height = height;
 		this.w = width 	/ 2;	// divided by 2 to give a +- range
 		this.h = height / 2;	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		this.r = rgb[0];
@@ -43,25 +55,30 @@ public class ParticleSimulatorClass implements ApplicationListener {
 		this.b = rgb[2];
 		// set delay
 		this.delay = delay;
-
 		// https://www.w3schools.com/java/java_files_read.asp
 		// https://github.com/mwanji/toml4j
-		/* Loads TOML file as a File object. */ // TODO change to `./config/particles.toml` for Alpha Build.
+		/* Loads TOML file as a File object. */
 		this.toml = toml;
-		pTables = new Toml().read(toml).getTables("particles");
+		try {
+			pTables = new Toml().read(toml).getTables("particles");
+		} catch (NullPointerException e) {
+			System.out.println("No particles in [particles] in simulator.toml");
+			e.printStackTrace();
+		}
 		System.out.println(pTables + " with sizeof "+pTables.size());
 		gate = new CyclicBarrier((pTables.size() + 1));
+		System.out.println(
+				new Toml().read(toml).toMap()
+		);
 	}
 
 	@Override
 	public void create()  {
 		batch = new SpriteBatch();
 		// fill out texture map
-		// Gdx.files.internal
-		textureMap.put("proton", new Texture("proton.png"));
-		textureMap.put("neutron", new Texture("neutron.png"));
-		textureMap.put("electron", new Texture("electron.png"));
-
+		textureMap.put("proton", 	new Texture("proton.png"));
+		textureMap.put("neutron", 	new Texture("neutron.png"));
+		textureMap.put("electron", 	new Texture("electron.png"));
 		/* This loads the Particles from the particles.toml file: */
 		int itr = 0;
 		for (Toml ignored : pTables) {
@@ -77,8 +94,22 @@ public class ParticleSimulatorClass implements ApplicationListener {
 					Math.round(currPart.getLong("vel[0]")),
 					Math.round(currPart.getLong("vel[1]")),
 			};
-			Velocity2 vel = new Velocity2(velArr);	// This basically casts the vel from the TOML to Velocity2.
-			PhysParticle particle = new PhysParticle(gate, type, id, pos, vel, particles, delay);
+			Velocity2 vel = new Velocity2(velArr);    // This basically casts the vel from the TOML to Velocity2.
+			PhysParticle particle = new PhysParticle(
+					gate,
+					type,
+					id,
+					pos,
+					vel,
+					particles,
+					delay,
+					GRAVITYCONSTANT,
+					AMUKGC,
+					FARADAY,
+					COULOMB,
+					ELECTRIC,
+					PI
+			);
 			particles.add(particle);
 			new Thread(particle).start();
 			System.out.println("Created particle <" + id + "> at " + Arrays.toString(pos) + ".");
@@ -96,8 +127,9 @@ public class ParticleSimulatorClass implements ApplicationListener {
 
 	}
 
+	/* render() acts as a main loop: */
 	@Override
-	public void render () {
+	public void render() {
 		// clears screen and sets a color
 		ScreenUtils.clear(r, g, b, 1);
 		// draws the stuff
@@ -106,49 +138,33 @@ public class ParticleSimulatorClass implements ApplicationListener {
 			/* Offset position to screen position: */
 			int x = part.getPos()[0] + w;
 			int y = part.getPos()[1] + h;
-			/* This cursed series of if-statements is a makeshift window wrap for particles. */
-
-			while ((x > w) || (y > h) || (x < -w) || (y < -h)) {
-				if (x > w) {
-					x = 2*h - x;
-					part.setPos(x, y - h);
-				}
-				if (y > h) {
-					y = 2*h - y;
-					part.setPos(x - w, y);
-				}
-				if (x < -w) {
-					x = 2*w + x;
-					part.setPos(x, y - h);
-				}
-				if (y < -h) {
-					y = 2*h + y;
-					part.setPos(x - w, y);
-				}
-			}
-
+			System.out.println("mod x: " + x + "\nmod y: " + y);
+			/* Window wrap for particles: */
+			if (x > w) x = x % width;
+			if (y > h) y = y % height;
+			if (x < -w) x = -x % width;
+			if (y < -w) y = -y % width;
+			/* Render each particle: */
 			batch.draw(textureMap.get(part.getType()), x, y);
 			part.forceUpdate();
 			part.positionUpdate();
 			try {
-				part.sleep();
+				TimeUnit.MILLISECONDS.sleep(delay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+
 			}
 		}
-
 		batch.end();
-		System.out.println("CALLED RENDERER");
+		System.out.println(">>>>>>>>>>>>>>>>>>>>CALLED RENDERER<<<<<<<<<<<<<<<<<<<<");
 	}
 
 	@Override
 	public void pause() {
-
 	}
 
 	@Override
 	public void resume() {
-
 	}
 
 	@Override

@@ -2,7 +2,15 @@
 width   = 1920
 height  = 1080
 rgb     = [0, 0, 0]
-delay   = 100
+delay   = 0
+
+[CONSTANTS]
+GRAVITYCONSTANT = 6.67408e-11
+AMUKGC          = 1.6605E-27
+FARADAY         = 96485
+COULOMB         = 8990000000
+ELECTRIC        = 1.1510444E-10
+PI              = 3.14
 
 [[particles]]
 type = "neutron"

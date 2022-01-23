@@ -7,13 +7,15 @@ package com.mygdx.phys;
 import com.badlogic.gdx.utils.Pool;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.lang.Math;
-import java.util.concurrent.TimeUnit;
 
 import static jdk.nashorn.internal.objects.Global.Infinity;
 
@@ -24,27 +26,39 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     double  mass;
     int     charge;
     UUID    id;
-    int[] pos;
-    Velocity2 vel;
+    public int[] pos;
+    public Velocity2 vel;
     ArrayList<PhysParticle> particles;
     double gForce = 0;
-    double fCoulomb = 0;
+    BigDecimal fCoulomb = BigDecimal.valueOf(0);
     int[] direction;
     int delay;
 
-    //public final double GRAVITYCONSTANT = 0.0000000000667408;
-    public final int    GRAVITYCONSTANT = 10;
-	public final double AMUKGC          = 0.0000000000000000000000000016605;
-    public final int    FARADAY         = 96485;
-    public final double COULOMB         = 8.9875517923*14*109;
-    public final double ELECTRIC        = 0.00000000011510444;
-    public final double PI              = 3.14;
+    public double GRAVITYCONSTANT;
+	public double AMUKGC;
+    public int    FARADAY;
+    public BigDecimal COULOMB;
+    public double ELECTRIC;
+    public double PI;
 
-    public PhysParticle(CyclicBarrier gate, String type, UUID id, int[] pos, Velocity2 vel, ArrayList<PhysParticle> particles, int delay) {
+    public PhysParticle(
+            CyclicBarrier           gate,
+            String                  type,
+            UUID                    id,
+            int[]                   pos,
+            Velocity2               vel,
+            ArrayList<PhysParticle> particles,
+            int                     delay,
+            double                  GRAVITYCONSTANT,
+            double                  AMUKGC,
+            int                     FARADAY,
+            BigDecimal COULOMB,
+            double                  ELECTRIC,
+            double                  PI
+    ) {
 
         this.gate = gate;
-        this.type   = type;
-
+        this.type = type;
         switch (type) {
             case "proton":
                 this.mass           = 1.000727;
@@ -63,12 +77,17 @@ public class PhysParticle implements Runnable, Pool.Poolable {
                     // TODO make ID an actual thing in generation
                     break;
             }
-
-            this.id     = id;
-            this.pos    = pos;
-            this.vel    = vel;
-            this.particles = particles;
-            this.delay  = delay;
+            this.id                 = id;
+            this.pos                = pos;
+            this.vel                = vel;
+            this.particles          = particles;
+            this.delay              = delay;
+            this.GRAVITYCONSTANT    = GRAVITYCONSTANT;
+            this.AMUKGC             = AMUKGC;
+            this.FARADAY            = FARADAY;
+            this.COULOMB            = BigDecimal.valueOf(Long.parseLong("8990000000"));
+            this.ELECTRIC           = ELECTRIC;
+            this.PI                 = PI;
     }
     // Getters and Setters take up needless space with line-breaks between them.
     /* Getters: */
@@ -116,31 +135,37 @@ public class PhysParticle implements Runnable, Pool.Poolable {
     public void forceUpdate() {
         for (PhysParticle part : particles) {
             // distance = √((x2-x1)^2+(y2-y1)^2)
-            double distance = Math.sqrt(Math.pow((part.pos[0] - this.pos[0]), 2) + Math.pow((part.pos[1] - this.pos[1]), 2));
-            direction = new int[] {
-                    pos[1] - part.getPos()[1],
-                    pos[0] - part.getPos()[0]
-            };
-            // Force of Attraction = Gravitation Constant * (Mass1 * Mass2) / distance^2
-            // this uses the += operator to cache the result of all gForces
-            gForce += GRAVITYCONSTANT * (this.mass * part.mass) / (Math.pow(distance, 2));
-            if (gForce == Infinity) {
-                gForce = 0;
+            if (this.id != part.id) {
+                double distance = Math.sqrt(Math.pow((part.pos[0] - this.pos[0]), 2) + Math.pow((part.pos[1] - this.pos[1]), 2));
+                direction = new int[]{
+                        pos[1] - part.getPos()[1],
+                        pos[0] - part.getPos()[0]
+                };
+                // Force of Attraction = Gravitation Constant * (Mass1 * Mass2) / distance^2
+                // this uses the += operator to cache the result of all gForces
+                gForce += GRAVITYCONSTANT * (this.mass * part.mass) / (Math.pow(distance, 2));
+                if (gForce == Infinity) { // Hack to work around gForce breaking due to double type limit.
+                    gForce = 0;
+                } // coulomb force, electrostatic
+                BigDecimal ch1 = BigDecimal.valueOf(this.charge);
+                BigDecimal ch2 = BigDecimal.valueOf(part.charge);
+                BigDecimal ch = ch1.multiply(ch2);
+                BigDecimal di = BigDecimal.valueOf(Math.pow(distance, 2));
+                BigDecimal chDi = ch.divide(di, 15, RoundingMode.HALF_DOWN);
+                fCoulomb = fCoulomb.add(COULOMB.multiply(chDi));
+                System.out.println("Charge calculation: " + ch);
+                System.out.println("Distance calculation: " + di);
+                System.out.println("Charge * Distance = " + chDi);
+                System.out.println("fCoulomb: " + fCoulomb);
             }
-            System.out.println("gForce: " + gForce);
-
-
-            fCoulomb = (COULOMB * this.mass) * ((this.charge * part.charge) / Math.pow(distance, 2));
-
-
         }
         vel.update(gForce, fCoulomb, direction);
         // Forces no longer needs to be cached for final results.
         gForce = 0;
-        fCoulomb = 0;
+        fCoulomb = BigDecimal.valueOf(0);
     }
 
-    public void positionUpdate() {  // TODO move particle on screen & change position in environment[][].
+    public void positionUpdate() {
         this.pos[0] += vel.getRun();
         this.pos[1] += vel.getRise();
         System.out.println("rise: " + vel.getRise() + " run: " + vel.getRun());
@@ -170,7 +195,4 @@ public class PhysParticle implements Runnable, Pool.Poolable {
         double gravity  = 0;
     }
 
-    public void sleep() throws InterruptedException {
-        TimeUnit.MILLISECONDS.sleep(delay);
-    }
 }

@@ -143,6 +143,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
                 };
                 // Force of Attraction = Gravitation Constant * (Mass1 * Mass2) / distance^2
                 // this uses the += operator to cache the result of all gForces
+                if (distance == 0) distance = 0.0001;
                 gForce += GRAVITYCONSTANT * (this.mass * part.mass) / (Math.pow(distance, 2));
                 if (gForce == Infinity) { // Hack to work around gForce breaking due to double type limit.
                     gForce = 0;
@@ -152,7 +153,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
                 BigDecimal ch = ch1.multiply(ch2);
                 BigDecimal di = BigDecimal.valueOf(Math.pow(distance, 2));
                 BigDecimal chDi = ch.divide(di, 15, RoundingMode.HALF_DOWN);
-                fCoulomb = fCoulomb.add(COULOMB.multiply(chDi));
+                  fCoulomb = fCoulomb.add(COULOMB.multiply(chDi));
             }
         }
         vel.update(gForce, fCoulomb, direction);

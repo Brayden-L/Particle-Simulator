@@ -85,7 +85,7 @@ public class PhysParticle implements Runnable, Pool.Poolable {
             this.GRAVITYCONSTANT    = GRAVITYCONSTANT;
             this.AMUKGC             = AMUKGC;
             this.FARADAY            = FARADAY;
-            this.COULOMB            = BigDecimal.valueOf(Long.parseLong("8990000000"));
+            this.COULOMB            = BigDecimal.valueOf(Long.parseLong("8990000000")); // "TEMPORARY" FIX.
             this.ELECTRIC           = ELECTRIC;
             this.PI                 = PI;
     }
@@ -153,10 +153,6 @@ public class PhysParticle implements Runnable, Pool.Poolable {
                 BigDecimal di = BigDecimal.valueOf(Math.pow(distance, 2));
                 BigDecimal chDi = ch.divide(di, 15, RoundingMode.HALF_DOWN);
                 fCoulomb = fCoulomb.add(COULOMB.multiply(chDi));
-                System.out.println("Charge calculation: " + ch);
-                System.out.println("Distance calculation: " + di);
-                System.out.println("Charge * Distance = " + chDi);
-                System.out.println("fCoulomb: " + fCoulomb);
             }
         }
         vel.update(gForce, fCoulomb, direction);

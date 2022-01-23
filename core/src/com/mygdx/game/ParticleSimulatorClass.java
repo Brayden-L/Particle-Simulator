@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ParticleSimulatorClass implements ApplicationListener {
+	public final String AUTHOR = "BRAYDEN L.";
+	public final String COPYRIGHT = "COPYRIGHT (C) 2022 BRAYDEN L.";
 	SpriteBatch batch;
 	CyclicBarrier gate;
 	Toml toml;

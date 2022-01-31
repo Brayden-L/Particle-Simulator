@@ -142,10 +142,10 @@ public class ParticleSimulatorClass implements ApplicationListener {
 			int y = part.getPos()[1] + h;
 			System.out.println("mod x: " + x + "\nmod y: " + y);
 			/* Window wrap for particles: */
-			if (x > w) x = x % width;
-			if (y > h) y = y % height;
-			if (x < -w) x = -x % width;
-			if (y < -w) y = -y % width;
+			while (x > w) x = x % width;
+			while (y > h) y = y % height;
+			while (x < -w) x = -x % width;
+			while (y < -w) y = -y % width;
 			/* Render each particle: */
 			batch.draw(textureMap.get(part.getType()), x, y);
 			part.forceUpdate();
